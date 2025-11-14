@@ -18,9 +18,9 @@ var sonidoFondo;
 var sonidoColision;
 var sonidoGasolina;
 
-// ESTADO DE LA PORTADA
-var Portada = {
-    preload: function() {
+var Juego = {
+
+    preload: function () {
         juego.load.image('bg', 'img/bg.png');
         juego.load.image('carro', 'img/carro.png');
         juego.load.image('carroMalo', 'img/carroMalo.png');
@@ -30,94 +30,6 @@ var Portada = {
         juego.load.audio('musicaFondo', 'musicajuego.mp3');
         juego.load.audio('colision', 'carcrash.mp3');
         juego.load.audio('gasolina', 'fuel.wav');
-    },
-    
-    create: function() {
-        // Fondo de la portada
-        fondo = juego.add.tileSprite(0, 0, 290, 540, 'bg');
-        
-        // Título del juego
-        var titulo = juego.add.text(juego.width/2, 150, 'CARRERA EXTREMA', {
-            fontSize: '28px',
-            fill: '#FFFF00',
-            fontFamily: 'Arial',
-            fontWeight: 'bold'
-        });
-        titulo.anchor.setTo(0.5);
-        
-        // Tu nombre y apellido
-        var nombre = juego.add.text(juego.width/2, 200, 'Por: Tu Nombre y Apellido', {
-            fontSize: '18px',
-            fill: '#FFFFFF',
-            fontFamily: 'Arial'
-        });
-        nombre.anchor.setTo(0.5);
-        
-        // Instrucciones
-        var instrucciones = juego.add.text(juego.width/2, 280, 'Usa las flechas ← → para moverte', {
-            fontSize: '16px',
-            fill: '#00FF00',
-            fontFamily: 'Arial'
-        });
-        instrucciones.anchor.setTo(0.5);
-        
-        var instrucciones2 = juego.add.text(juego.width/2, 310, 'Evita los autos enemigos', {
-            fontSize: '16px',
-            fill: '#FF0000',
-            fontFamily: 'Arial'
-        });
-        instrucciones2.anchor.setTo(0.5);
-        
-        var instrucciones3 = juego.add.text(juego.width/2, 340, 'Recoge la gasolina', {
-            fontSize: '16px',
-            fill: '#00FFFF',
-            fontFamily: 'Arial'
-        });
-        instrucciones3.anchor.setTo(0.5);
-        
-        // Botón para iniciar
-        var botonIniciar = juego.add.text(juego.width/2, 400, 'Haz CLICK para INICIAR', {
-            fontSize: '20px',
-            fill: '#00FF00',
-            fontFamily: 'Arial',
-            backgroundColor: '#000000',
-            padding: { x: 10, y: 5 }
-        });
-        botonIniciar.anchor.setTo(0.5);
-        botonIniciar.inputEnabled = true;
-        
-        // Animación del botón
-        botonIniciar.alpha = 0.7;
-        juego.add.tween(botonIniciar).to({alpha: 1}, 500, Phaser.Easing.Linear.None, true, 0, -1, true);
-        
-        // Evento para iniciar el juego al hacer click
-        botonIniciar.events.onInputDown.add(function() {
-            juego.state.start('Juego');
-        });
-        
-        // También se puede iniciar con la barra espaciadora o enter
-        var enterKey = juego.input.keyboard.addKey(Phaser.Keyboard.ENTER);
-        var spaceKey = juego.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        
-        enterKey.onDown.add(function() {
-            juego.state.start('Juego');
-        });
-        
-        spaceKey.onDown.add(function() {
-            juego.state.start('Juego');
-        });
-    },
-    
-    update: function() {
-        // Animación del fondo
-        fondo.tilePosition.y += 1;
-    }
-};
-
-// ESTADO PRINCIPAL DEL JUEGO
-var Juego = {
-    preload: function () {
-        // Los recursos ya se cargaron en la portada
     },
 
     mostrarPopup: function() {
@@ -166,6 +78,7 @@ var Juego = {
     },
 
     create: function () {
+
         // Inicializar sonidos
         sonidoFondo = juego.add.audio('musicaFondo');
         sonidoColision = juego.add.audio('colision');
@@ -278,6 +191,7 @@ var Juego = {
     },
 
     update: function() {
+
         if (this.juegoTerminado) return;
 
         fondo.tilePosition.y += 3;
@@ -358,9 +272,6 @@ var Juego = {
     }
 };
 
-// Configurar los estados del juego
-juego.state.add('Portada', Portada);
-juego.state.add('Juego', Juego);
 
-// Iniciar con la portada
-juego.state.start('Portada');
+juego.state.add('Juego', Juego);
+juego.state.start('Juego');
