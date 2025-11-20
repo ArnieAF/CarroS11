@@ -29,12 +29,17 @@ var Juego = {
         // Cargar sonidos
         juego.load.audio('musicaFondo', 'musicajuego.mp3');
         juego.load.audio('colision', 'carcrash.mp3');
-        juego.load.audio('gasolina', 'fuel.wav');
+        juego.load.audio('gasolina', 'fuel.mp3');
     },
 
-    mostrarPopup: function() {
+    mostrarPopupGanador: function() {
         this.juegoTerminado = true;
-        this.popup.visible = true;
+        this.popupGanador.visible = true;
+    },
+
+    mostrarPopupPerdedor: function() {
+        this.juegoTerminado = true;
+        this.popupPerdedor.visible = true;
     },
 
     reiniciarJuego: function() {
@@ -67,7 +72,8 @@ var Juego = {
         var mensajeNivel = juego.add.text(juego.width/2, juego.height/2, '¡NIVEL ' + nivel + '!', {
             fontSize: '32px',
             fill: '#FFFF00',
-            fontFamily: 'Arial'
+            fontFamily: 'Arial',
+            fontWeight: 'bold'
         });
         mensajeNivel.anchor.setTo(0.5);
         
@@ -77,7 +83,39 @@ var Juego = {
         });
     },
 
+    verificarGanador: function() {
+        if (nivel === 2 && puntaje >= 30) {
+            this.mostrarPopupGanador();
+        }
+    },
+
+    mostrarNombreDesarrollador: function() {
+        // Crear panel para mostrar el nombre
+        var panelNombre = juego.add.graphics(0, 0);
+        panelNombre.beginFill(0x000000, 0.8);
+        panelNombre.drawRect(0, 0, juego.width, juego.height);
+        
+        // Texto con el nombre
+        var textoNombre = juego.add.text(juego.width/2, juego.height/2, 'Arnie Jeampool Adriano Flores\nU22209026', {
+            fontSize: '20px',
+            fill: '#FFFFFF',
+            fontFamily: 'Arial',
+            fontWeight: 'bold',
+            align: 'center'
+        });
+        textoNombre.anchor.setTo(0.5);
+        
+        // Hacer que el texto desaparezca después de 2 segundos
+        juego.time.events.add(2000, function() {
+            panelNombre.destroy();
+            textoNombre.destroy();
+        });
+    },
+
     create: function () {
+
+        // Mostrar nombre del desarrollador al inicio
+        this.mostrarNombreDesarrollador();
 
         // Inicializar sonidos
         sonidoFondo = juego.add.audio('musicaFondo');
@@ -100,21 +138,24 @@ var Juego = {
         textoPuntaje = juego.add.text(10, 10, 'Puntaje: 0', { 
             fontSize: '18px', 
             fill: '#FFFFFF',
-            fontFamily: 'Arial'
+            fontFamily: 'Arial',
+            fontWeight: 'bold'
         });
 
         // Vidas
         textoVidas = juego.add.text(100, 10, 'Vidas: 3', { 
             fontSize: '18px', 
             fill: '#FF0000',
-            fontFamily: 'Arial'
+            fontFamily: 'Arial',
+            fontWeight: 'bold'
         });
 
         // Nivel
         textoNivel = juego.add.text(200, 10, 'Nivel: 1', { 
             fontSize: '18px', 
             fill: '#00FF00',
-            fontFamily: 'Arial'
+            fontFamily: 'Arial',
+            fontWeight: 'bold'
         });
 
         // Enemigos
@@ -137,54 +178,112 @@ var Juego = {
         gasolinas.setAll('outOfBoundsKill', true);
         gasolinas.setAll('checkWorldBounds', true);
 
-        // --- POPUP GAME OVER ---
-        this.popup = juego.add.group();
+        // --- POPUP GANADOR ---
+        this.popupGanador = juego.add.group();
 
-        var fondoPopup = juego.add.graphics(0, 0);
-        fondoPopup.beginFill(0x000000, 0.7);
-        fondoPopup.drawRect(0, 0, juego.width, juego.height);
-        this.popup.add(fondoPopup);
+        var fondoPopupGanador = juego.add.graphics(0, 0);
+        fondoPopupGanador.beginFill(0x000000, 0.8);
+        fondoPopupGanador.drawRect(0, 0, juego.width, juego.height);
+        this.popupGanador.add(fondoPopupGanador);
 
-        var cuadro = juego.add.graphics(0, 0);
-        cuadro.beginFill(0x222222, 1);
-        cuadro.drawRect(juego.width/2 - 120, juego.height/2 - 80, 240, 160);
-        this.popup.add(cuadro);
+        var cuadroGanador = juego.add.graphics(0, 0);
+        cuadroGanador.beginFill(0x006600, 1);
+        cuadroGanador.drawRect(juego.width/2 - 120, juego.height/2 - 80, 240, 160);
+        this.popupGanador.add(cuadroGanador);
 
-        var txtGameOver = juego.add.text(
+        var txtGanador = juego.add.text(
             juego.width/2, 
             juego.height/2 - 40, 
-            "¡GAME OVER!", 
-            { fontSize: "24px", fill: "#FFFFFF" }
+            "¡GANASTE!", 
+            { fontSize: "24px", fill: "#FFFF00", fontWeight: "bold" }
         );
-        txtGameOver.anchor.setTo(0.5);
-        this.popup.add(txtGameOver);
+        txtGanador.anchor.setTo(0.5);
+        this.popupGanador.add(txtGanador);
 
-        var txtPuntajeFinal = juego.add.text(
+        var txtPuntajeFinalGanador = juego.add.text(
             juego.width/2, 
             juego.height/2, 
             "Puntaje: " + puntaje, 
-            { fontSize: "18px", fill: "#FFFF00" }
+            { fontSize: "18px", fill: "#FFFFFF", fontWeight: "bold" }
         );
-        txtPuntajeFinal.anchor.setTo(0.5);
-        this.popup.add(txtPuntajeFinal);
+        txtPuntajeFinalGanador.anchor.setTo(0.5);
+        this.popupGanador.add(txtPuntajeFinalGanador);
 
-        var btnReiniciar = juego.add.text(
+        var btnReiniciarGanador = juego.add.text(
             juego.width/2, 
             juego.height/2 + 40, 
-            "Reiniciar", 
-            { fontSize: "20px", fill: "#00FF00" }
+            "Jugar Otra Vez", 
+            { fontSize: "20px", fill: "#00FF00", fontWeight: "bold" }
         );
-        btnReiniciar.anchor.setTo(0.5);
-        btnReiniciar.inputEnabled = true;
-        btnReiniciar.events.onInputDown.add(this.reiniciarJuego, this);
-        this.popup.add(btnReiniciar);
+        btnReiniciarGanador.anchor.setTo(0.5);
+        btnReiniciarGanador.inputEnabled = true;
+        btnReiniciarGanador.events.onInputDown.add(this.reiniciarJuego, this);
+        this.popupGanador.add(btnReiniciarGanador);
 
-        this.popup.visible = false;
+        this.popupGanador.visible = false;
+
+        // --- POPUP PERDEDOR ---
+        this.popupPerdedor = juego.add.group();
+
+        var fondoPopupPerdedor = juego.add.graphics(0, 0);
+        fondoPopupPerdedor.beginFill(0x000000, 0.8);
+        fondoPopupPerdedor.drawRect(0, 0, juego.width, juego.height);
+        this.popupPerdedor.add(fondoPopupPerdedor);
+
+        var cuadroPerdedor = juego.add.graphics(0, 0);
+        cuadroPerdedor.beginFill(0x660000, 1);
+        cuadroPerdedor.drawRect(juego.width/2 - 120, juego.height/2 - 80, 240, 160);
+        this.popupPerdedor.add(cuadroPerdedor);
+
+        var txtPerdedor = juego.add.text(
+            juego.width/2, 
+            juego.height/2 - 40, 
+            "¡GAME OVER!", 
+            { fontSize: "24px", fill: "#FFFFFF", fontWeight: "bold" }
+        );
+        txtPerdedor.anchor.setTo(0.5);
+        this.popupPerdedor.add(txtPerdedor);
+
+        var txtIntentalo = juego.add.text(
+            juego.width/2, 
+            juego.height/2 - 10, 
+            "VUELVE A INTENTARLO", 
+            { fontSize: "16px", fill: "#FFFF00", fontWeight: "bold" }
+        );
+        txtIntentalo.anchor.setTo(0.5);
+        this.popupPerdedor.add(txtIntentalo);
+
+        var txtPuntajeFinalPerdedor = juego.add.text(
+            juego.width/2, 
+            juego.height/2 + 20, 
+            "Puntaje: " + puntaje, 
+            { fontSize: "18px", fill: "#FFFFFF", fontWeight: "bold" }
+        );
+        txtPuntajeFinalPerdedor.anchor.setTo(0.5);
+        this.popupPerdedor.add(txtPuntajeFinalPerdedor);
+
+        var btnReiniciarPerdedor = juego.add.text(
+            juego.width/2, 
+            juego.height/2 + 50, 
+            "Reiniciar", 
+            { fontSize: "20px", fill: "#00FF00", fontWeight: "bold" }
+        );
+        btnReiniciarPerdedor.anchor.setTo(0.5);
+        btnReiniciarPerdedor.inputEnabled = true;
+        btnReiniciarPerdedor.events.onInputDown.add(this.reiniciarJuego, this);
+        this.popupPerdedor.add(btnReiniciarPerdedor);
+
+        this.popupPerdedor.visible = false;
         this.juegoTerminado = false;
 
-        // Timers
-        timer = juego.time.events.loop(1500, this.crearCarroMalo, this);
-        timerGasolina = juego.time.events.loop(2000, this.crearGasolina, this);
+        // Timers - ajustados según nivel
+        if (nivel === 1) {
+            timer = juego.time.events.loop(1500, this.crearCarroMalo, this);
+            timerGasolina = juego.time.events.loop(2000, this.crearGasolina, this);
+        } else {
+            timer = juego.time.events.loop(1000, this.crearCarroMalo, this); // Más rápido en nivel 2
+            timerGasolina = juego.time.events.loop(1500, this.crearGasolina, this); // Más rápido en nivel 2
+        }
 
         // Controles
         cursores = juego.input.keyboard.createCursorKeys();
@@ -203,10 +302,13 @@ var Juego = {
             carro.position.x -= 5;
         }
         
-        // Verificar si sube de nivel
+        // Verificar si sube de nivel (3 puntos para pasar al nivel 2)
         if (puntaje >= 15 && nivel === 1) {
             this.cambiarNivel();
         }
+        
+        // Verificar si gana el juego (completar nivel 2)
+        this.verificarGanador();
         
         juego.physics.arcade.overlap(carro, enemigos, this.colisionEnemigo, null, this);
         juego.physics.arcade.overlap(carro, gasolinas, this.colisionGasolina, null, this);
@@ -255,7 +357,7 @@ var Juego = {
         if (vidas <= 0) {
             puntaje = Math.max(0, puntaje - 10);
             textoPuntaje.text = 'Puntaje: ' + puntaje;
-            this.mostrarPopup();
+            this.mostrarPopupPerdedor();
         } else {
             puntaje = Math.max(0, puntaje - 10);
             textoPuntaje.text = 'Puntaje: ' + puntaje;
@@ -272,6 +374,63 @@ var Juego = {
     }
 };
 
+// Estado para la portada
+var Portada = {
+    create: function() {
+        // Fondo de portada
+        var fondoPortada = juego.add.tileSprite(0, 0, 290, 540, 'bg');
+        
+        // Título del juego
+        var titulo = juego.add.text(juego.width/2, 150, 'CARRERA EXTREMA', {
+            fontSize: '28px',
+            fill: '#FFFF00',
+            fontFamily: 'Arial',
+            fontWeight: 'bold'
+        });
+        titulo.anchor.setTo(0.5);
+        
+        // Nombre del desarrollador - ACTUALIZADO CON TU NOMBRE REAL
+        var desarrollador = juego.add.text(juego.width/2, 200, 'Desarrollado por:\nArnie Jeampool Adriano Flores\nU22209026', {
+            fontSize: '18px',
+            fill: '#FFFFFF',
+            fontFamily: 'Arial',
+            align: 'center',
+            fontWeight: 'bold'
+        });
+        desarrollador.anchor.setTo(0.5);
+        
+        // Instrucciones
+        var instrucciones = juego.add.text(juego.width/2, 280, 'Usa las flechas ← → para moverte\n\nEvita los autos enemigos\nRecoge la gasolina\n\nConsigue 15 puntos para el nivel 2\n30 puntos para ganar!', {
+            fontSize: '16px',
+            fill: '#00FF00',
+            fontFamily: 'Arial',
+            align: 'center'
+        });
+        instrucciones.anchor.setTo(0.5);
+        
+        // Botón para iniciar juego
+        var btnIniciar = juego.add.text(juego.width/2, 400, 'INICIAR JUEGO', {
+            fontSize: '24px',
+            fill: '#FF0000',
+            fontFamily: 'Arial',
+            fontWeight: 'bold'
+        });
+        btnIniciar.anchor.setTo(0.5);
+        btnIniciar.inputEnabled = true;
+        btnIniciar.events.onInputDown.add(this.iniciarJuego, this);
+        
+        // Efecto de parpadeo en el botón
+        juego.time.events.loop(500, function() {
+            btnIniciar.alpha = btnIniciar.alpha === 1 ? 0.5 : 1;
+        }, this);
+    },
+    
+    iniciarJuego: function() {
+        juego.state.start('Juego');
+    }
+};
 
+// Configurar los estados del juego
+juego.state.add('Portada', Portada);
 juego.state.add('Juego', Juego);
-juego.state.start('Juego');
+juego.state.start('Portada');
